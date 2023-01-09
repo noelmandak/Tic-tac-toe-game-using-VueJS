@@ -11,9 +11,13 @@
             <div class="square-O merah" v-if="table[index] === 'O'"></div>
         </div>
     </div>
+    
 </template>
 
 <script>
+import {ModelAI} from "./model"
+
+
 export default {
     name: "Board",
     data() {
@@ -27,6 +31,9 @@ export default {
             total_game: undefined,
             winner: "",
             Oturn: false,
+            model: undefined,
+            player_mark : "X",
+            AI_mark: "O"
         };
     },
     computed: {
@@ -72,7 +79,16 @@ export default {
                     window.sessionStorage.setItem("draw", this.draw);
                 }
                 this.to_ScoreBoard();
+                
+                if (this.Oturn) { //model turn
+                    let model_turn = this.model.action(this.table)
+                    this.clicked(model_turn)
+                }
             }
+        },
+        is_AI_turn() {
+            if (this.AI_mark === "O") return !this.Oturn
+            return this.Oturn
         },
         to_ScoreBoard() {
             this.emitter.emit("score", this.$data);
@@ -200,10 +216,12 @@ export default {
         },
     },
 
-    created() {
+    mounted() {
         let Xwin_ = parseInt(window.sessionStorage.getItem("Xwin"));
         let Owin_ = parseInt(window.sessionStorage.getItem("Owin"));
         let draw_ = parseInt(window.sessionStorage.getItem("draw"));
+
+        this.model = new ModelAI(this.AI_mark)
 
         if (isNaN(Xwin_) || isNaN(Owin_) || isNaN(draw_)) {
             this.Xwin = 0;
@@ -228,6 +246,7 @@ export default {
         this.emitter.on("reset_score", (status) => {
             this.reset_score();
         });
+        
     },
 };
 </script>

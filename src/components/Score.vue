@@ -8,7 +8,7 @@
                     <i class="fas fa-times fs-1 pb-2"></i>
                     <br />
                     {{ Xwin }} Win <br />
-                    Winrate {{ ((Xwin / (Xwin + Owin + draw)) * 100).toFixed(2) }}%
+                    Winrate {{ xWinRate }}%
                 </div>
             </div>
             <div class="text-vertically-center merah" style="width: 50%; height: 150px">
@@ -16,7 +16,7 @@
                     <i class="far fa-circle fs-1 pb-2"></i>
                     <br />
                     {{ Owin }} Win <br />
-                    Winrate {{ ((Owin / (Xwin + Owin + draw)) * 100).toFixed(2) }}%
+                    Winrate {{ oWinRate }}%
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
             <div class="fs-1">&half;</div>
             <br />
             {{ draw }} Draw<br />
-            Drawrate {{ ((draw / (Xwin + Owin + draw)) * 100).toFixed(2) }}%
+            Drawrate {{ drawRate }}%
         </div>
 
         <div class="text-vertically-center" style="background-color: #fff; width: 100%; height: 75px">
@@ -69,6 +69,21 @@ export default {
             this.emitter.emit("reset_score", true);
         },
         whoiswin() {},
+    },
+
+    computed: {
+        xWinRate() {
+            if ((this.Xwin + this.Owin + this.draw) == 0) return 0
+            return ((this.Xwin / (this.Xwin + this.Owin + this.draw)) * 100).toFixed(2)
+        },
+        oWinRate() {
+            if ((this.Xwin + this.Owin + this.draw) == 0) return 0
+            return ((this.Owin / (this.Xwin + this.Owin + this.draw)) * 100).toFixed(2)
+        },
+        drawRate() {
+            if ((this.Xwin + this.Owin + this.draw) == 0) return 0
+            return ((this.draw / (this.Xwin + this.Owin + this.draw)) * 100).toFixed(2)
+        }
     },
 
     created() {
